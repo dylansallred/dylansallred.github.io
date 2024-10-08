@@ -1961,6 +1961,7 @@ const equipmentHandler = {
         if (event.target.classList.contains('remove-equipment-btn')) {
             event.target.closest('.equipment-item').remove();
             this.updateLogEquipment();
+            app.updateNotesWithAddressAndEquipment(); // Add this line
         }
     },
     updateLogEquipment() {
@@ -1970,6 +1971,7 @@ const equipmentHandler = {
             logs[logIndex].equipment = this.getEquipmentData();
             storage.saveLogs(logs);
             renderer.renderLogs(app.currentSort.key, app.currentSort.order);
+            app.updateNotesWithAddressAndEquipment(); // Add this line
         }
     },
     getEquipmentData() {
@@ -1987,6 +1989,7 @@ const equipmentHandler = {
         });
     }
 };
+
 // Import/Export Handling
 const importExportHandler = {
     handleExportLogs() {
@@ -2384,13 +2387,99 @@ const app = {
                 }
             }
 
-            if (name === 'replacementCheckbox' || target.closest('.equipment-item') || target.id === 'equipmentContainer') {
+            if (name === 'replacementCheckbox' || target.closest('.equipment-item') || target.id === 'equipmentContainer' || name === 'replacementAddress' || name === 'vendorName' || name === 'vendorID' || name === 'caseNumber') {
                 logs[logIndex].equipment = equipmentHandler.getEquipmentData();
+                this.updateNotesWithAddressAndEquipment();
             }
 
             storage.saveLogs(logs);
             renderer.renderLogs(this.currentSort.key, this.currentSort.order);
         }
+    },
+    updateNotesWithAddressAndEquipment() {
+        const notesField = document.getElementById('notes');
+        const addressField = document.getElementById('replacementAddress');
+        const vendorNameField = document.getElementById('vendorName');
+        const vendorIDField = document.getElementById('vendorID');
+        const caseNumberField = document.getElementById('caseNumber');
+        const replacementCheckbox = document.getElementById('replacementCheckbox');
+        const equipment = equipmentHandler.getEquipmentData();
+
+        // Split the existing notes
+        let [existingNotes, generatedContent] = notesField.value.split('\n---------------\n');
+        existingNotes = existingNotes.trim();
+
+        // Extract "Due to" information if it exists
+        let dueTo = '';
+        if (generatedContent) {
+            const dueToMatch = generatedContent.match(/Request Reason:\nDue to([\s\S]*?)(?=\n\nItem List:|\n\nShipping Address:|\n\nCase #:)/);
+            if (dueToMatch) {
+                dueTo = dueToMatch[1].trim();
+            }
+        }
+
+        // If replacement is not required, remove generated content and return
+        if (!replacementCheckbox.checked) {
+            notesField.value = existingNotes;
+            this.autoSave({ target: notesField });
+            return;
+        }
+
+        let additionalNotes = '\n\n---------------\n\n';
+
+        // Always include the "Due to" section
+        additionalNotes += `Request Reason:\nDue to ${dueTo}\n\n`;
+
+        // Only include Item List if there's equipment
+        if (equipment.length > 0) {
+            additionalNotes += 'Item List:\n';
+            equipment.forEach(item => {
+                if (item.name === 'PSU' && item.psuFor) {
+                    additionalNotes += `1 x PSU ${item.psuFor}\n`;
+                } else if (item.name === 'USB Reimage Key') {
+                    const state = document.getElementById('state').value;
+                    additionalNotes += `1 x ${state} reimage key\n`;
+                } else {
+                    additionalNotes += `1 x ${item.name}\n`;
+                }
+            });
+            additionalNotes += '\n';
+        }
+
+        // Only include Shipping Address if there's an address
+        if (addressField.value) {
+            const [street, cityStateZip] = this.formatAddress(addressField.value);
+            additionalNotes += 'Shipping Address:\n';
+            additionalNotes += `${vendorNameField.value}\n`;
+            additionalNotes += `${street}\n`;
+            additionalNotes += `${cityStateZip}\n\n`;
+        }
+
+        // Always include Case #, SN, and TID
+        additionalNotes += `Case #: ${caseNumberField.value}\n`;
+
+        const serialNumbers = equipment
+            .map(item => item.serialNumber)
+            .filter(sn => sn)
+            .join(', ');
+        additionalNotes += `SN: ${serialNumbers}\n`;
+
+        additionalNotes += `TID: ${vendorIDField.value}`;
+
+        // Combine the existing notes with the new additional notes
+        notesField.value = existingNotes + additionalNotes;
+
+        // Trigger the autoSave for the notes field
+        this.autoSave({ target: notesField });
+    },
+    formatAddress(address) {
+        const parts = address.split(',');
+        if (parts.length > 1) {
+            const street = parts[0].trim();
+            const cityStateZip = parts.slice(1).join(',').trim();
+            return [street, cityStateZip];
+        }
+        return [address, ''];
     },
     handleEdit(logId) {
         const logs = storage.getLogs();
@@ -2766,7 +2855,12 @@ const init = () => {
 
     // Equipment Buttons
     document.getElementById('addEquipmentBtn').addEventListener('click', equipmentHandler.addEquipment.bind(equipmentHandler));
-    document.getElementById('equipmentContainer').addEventListener('click', equipmentHandler.removeEquipment.bind(equipmentHandler));
+    document.getElementById('equipmentContainer').addEventListener('click', (event) => {
+        if (event.target.classList.contains('remove-equipment-btn')) {
+            equipmentHandler.removeEquipment(event);
+            app.updateNotesWithAddressAndEquipment();
+        }
+    });
 
     // Generate Buttons
     document.getElementById('generateTitleBtn').addEventListener('click', app.generateTitle.bind(app));
@@ -2787,6 +2881,14 @@ const init = () => {
         localStorage.setItem('scratchNotes', JSON.stringify(app.scratchNotes));
         app.renderScratchNotes();
     });
+
+    // Add event listeners for address and equipment changes
+    document.getElementById('replacementAddress').addEventListener('input', app.updateNotesWithAddressAndEquipment.bind(app));
+    document.getElementById('equipmentContainer').addEventListener('input', app.updateNotesWithAddressAndEquipment.bind(app));
+    document.getElementById('vendorName').addEventListener('input', app.updateNotesWithAddressAndEquipment.bind(app));
+    document.getElementById('vendorID').addEventListener('input', app.updateNotesWithAddressAndEquipment.bind(app));
+    document.getElementById('caseNumber').addEventListener('input', app.updateNotesWithAddressAndEquipment.bind(app));
+    document.getElementById('state').addEventListener('change', app.updateNotesWithAddressAndEquipment.bind(app));
 
     // Initialize Scratch Notes
     app.renderScratchNotes();
