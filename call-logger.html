@@ -1495,7 +1495,7 @@ select {
                     <div class="form-group">
                         <label for="vendorName">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7z"></path>
                                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
                             </svg>
                             Vendor/Agent Name
@@ -2184,6 +2184,9 @@ const formHandler = {
         const equipmentContainer = document.getElementById('equipmentContainer');
         equipmentContainer.innerHTML = '';
         log.equipment?.forEach(item => equipmentContainer.appendChild(equipmentHandler.createEquipmentItem(item)));
+
+        // Move this call after setting the checkbox
+        app.updateNotesWithAddressAndEquipment();
     },
     handleCreateNewLog() {
         this.clearForm();
@@ -2382,6 +2385,7 @@ const app = {
                             this.scrollToBottom();
                         }, 250);
                     }
+                    this.updateNotesWithAddressAndEquipment();
                 } else {
                     logs[logIndex][name] = value;
                 }
@@ -2901,6 +2905,12 @@ const init = () => {
     }
     renderer.renderLogs(app.currentSort.key, app.currentSort.order);
     app.currentFilteredLogs = storage.getLogs();
+
+    // Add event listener for the replacement checkbox
+    document.getElementById('replacementCheckbox').addEventListener('change', (event) => {
+        app.updateNotesWithAddressAndEquipment();
+        app.autoSave(event);
+    });
 };
 
 // Start the application
