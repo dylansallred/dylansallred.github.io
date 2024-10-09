@@ -124,6 +124,40 @@ h2::before {
     overflow: hidden;
 }
 
+.logs-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#exportFilteredLogsBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+#exportFilteredLogsBtn.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#exportFilteredLogsBtn:hover {
+    transform: scale(1.1);
+}
+
+#exportFilteredLogsBtn svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-color);
+}
+
+#exportFilteredLogsBtn svg:hover {
+    color: var(--accent-color);
+}
+
 .table-container {
     flex-grow: 1;
     overflow-y: auto;
@@ -255,7 +289,7 @@ button:hover,
 .help-btn {
     font-size: 1em;
     padding: 3px 7px;
-    margin-bottom: 5px;
+    margin-bottom: 1px;
     margin-top: 5px;
     border-radius: 5px;
     min-width: 100px;
@@ -420,7 +454,6 @@ button:hover,
     display: flex;
     flex-direction: column;
     gap: 2.5px;
-    margin-top: 5px;
 }
 
 .form-group label {
@@ -428,7 +461,6 @@ button:hover,
     align-items: center;
     gap: 10px;
     font-weight: bold;
-    margin-bottom: 3px;
 }
 
 .form-group label svg {
@@ -460,7 +492,8 @@ button:hover,
 }
 
 .form-group textarea {
-    height: 175px;
+    min-height: 150px;
+    height: 250px;
     resize: vertical;
 }
 
@@ -778,16 +811,21 @@ thead tr:hover {
 .help-content p,
 .help-content li {
     font-size: 0.8em;
-    line-height: 1.6;
+    line-height: 1.2;
+    margin-bottom: 4px;
 }
 
 .help-content ul {
     padding-left: 20px;
-    margin-bottom: 15px;
+    margin-bottom: 6px;
 }
 
 .help-content section {
     margin-bottom: 25px;
+}
+.help-modal strong {
+    color: #837769;
+    text-shadow: 0 0 3px #0000009c;
 }
 
 .close-instruction {
@@ -842,13 +880,18 @@ thead tr:hover {
 .notification {
     position: fixed;
     top: 10px;
-    right: 10px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
     background-color: var(--accent-color);
     color: white;
     padding: 6px 15px;
     border-radius: 5px;
     z-index: 1001;
     transition: opacity 0.3s ease-out;
+    text-align: center;
 }
 
 .notification.hidden {
@@ -989,7 +1032,7 @@ thead tr:hover {
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: opacity 0.5s ease, visibility 0.5s ease, transform 0.5s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
     background-color: var(--background-color);
     border: .5px solid var(--primary-color);
     border-radius: 25px;
@@ -997,12 +1040,15 @@ thead tr:hover {
     z-index: 10;
     gap: 10px;
     box-shadow: 0px 0px 20px #00000069, 0px 0px 0px 1px #ffffff17;
+    pointer-events: none;
 }
 
-.options-menu:hover .additional-buttons {
+.options-menu:hover .additional-buttons,
+.additional-buttons.active {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    pointer-events: auto;
 }
 
 .additional-buttons button {
@@ -1090,6 +1136,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     height: auto;
     color: transparent;
     background: transparent;
+    cursor: pointer;
 }
 
 select {
@@ -1107,6 +1154,7 @@ select {
    Miscellaneous Styles
 ================================= */
 #addTestDataBtn {
+    display: flex;
 }
 
 /* Add or update these styles */
@@ -1145,11 +1193,11 @@ select {
 }
 
 .scratch-notes-content {
-    padding: 20px;
+    padding: 10px 15px 10px 10px;
 }
 
 .scratch-notes-content h3 {
-    margin-bottom: 10px;
+   
     color: var(--accent-color);
 }
 
@@ -1204,11 +1252,24 @@ select {
     top: 0;
     background-color: var(--primary-color);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
     padding: 10px 20px;
     z-index: 1;
     border-bottom: 1px solid var(--secondary-color);
+}
+
+.scratch-notes-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.scratch-notes-hint {
+    font-size: 0.5em;
+    color: var(--text-color);
+    opacity: 0.7;
+    line-height: 1.4;
 }
 
 #deleteAllScratchNotesBtn {
@@ -1219,7 +1280,7 @@ select {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-bottom: 10px;
+
 }
 
 #deleteAllScratchNotesBtn:hover {
@@ -1252,6 +1313,7 @@ select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    cursor: pointer;
 }
 
 .form-group select option {
@@ -1356,6 +1418,7 @@ select {
 /* Checkbox hover effect */
 .checkbox-group input[type="checkbox"] {
     transition: transform 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 .checkbox-group input[type="checkbox"]:hover {
@@ -1366,13 +1429,71 @@ select {
 .checkbox-group label {
     display: inline-block;
     transition: transform 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 .checkbox-group label:hover {
     transform: scale(1.05);
 }
 
+/* Add these styles to your existing CSS */
+.case-number-group {
+    display: flex;
+    flex-direction: column;
+}
 
+.case-number-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.existing-case-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.existing-case-checkbox input[type="checkbox"] {
+    margin: 0;
+    width: auto;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.existing-case-checkbox input[type="checkbox"]:hover {
+    transform: scale(1.3);
+   
+}
+
+
+
+.existing-case-checkbox label {
+    font-size: 0.9em;
+    color: var(--text-color);
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+
+}
+
+.existing-case-checkbox label:hover{
+    transform: scale(1.05);
+}
+
+/* Adjust the width of the case number input */
+#caseNumber {
+    width: calc(100% - 120px); /* Adjust this value as needed */
+}
+
+.existing-case-checkbox input:focus{
+    box-shadow: none;
+}
+
+/* Add this to your existing CSS */
+.existing-case {
+    color: var(--accent-color);
+}
     </style>
 </head>
 <body>
@@ -1407,7 +1528,16 @@ select {
                 </div>
             </div>
             <div class="logs-section">
-                <h2>Call Logs <span id="logCounter">(0)</span></h2>
+                <h2>
+                    Call Logs <span id="logCounter">(0)</span>
+                    <button id="exportFilteredLogsBtn" class="icon-btn" title="Export Filtered Logs">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </button>
+                </h2>
                 <div class="table-container">
                     <table id="logsTable">
                         <thead>
@@ -1510,7 +1640,7 @@ select {
                         </label>
                         <input type="tel" id="phoneNumber" name="phoneNumber" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group case-number-group">
                         <label for="caseNumber">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
@@ -1518,7 +1648,13 @@ select {
                             </svg>
                             Ticket/Case #
                         </label>
-                        <input type="text" id="caseNumber" name="caseNumber" required>
+                        <div class="case-number-wrapper">
+                            <input type="text" id="caseNumber" name="caseNumber" required>
+                            <div class="existing-case-checkbox">
+                                <input type="checkbox" id="existingCase" name="existingCase">
+                                <label for="existingCase">Existing Ticket</label>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="notes">
@@ -1613,8 +1749,8 @@ select {
                 <h3>Quick Start</h3>
                 <ul>
                     <li>Click <button class="help-btn create-btn">New Call Log</button> to create a new entry.</li>
-                    <li>Use the search bar to filter logs by date, state, or any other information.</li>
-                    <li>Click on any table row to edit that log entry.</li>
+                    <li>Use the search bar to filter logs by date, state, or other criteria.</li>
+                    <li>Click on a table row to edit a log entry.</li>
                 </ul>
             </section>
 
@@ -1627,9 +1763,16 @@ select {
                             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
                         </svg>
                         to delete a single log.</li>
-                    <li><strong>Delete All:</strong> <button class="help-btn delete-all-btn" >Delete All Logs</button> to delete all logs.</li>
-                    <li><strong>Export:</strong> <button class="help-btn export-btn" style="margin-left: 20px; margin-right: 4px;">Export Logs</button>to download as CSV.</li>
-                    <li><strong>Import:</strong> <button class="help-btn import-btn" style="margin-left: 17px; margin-right: 4px;">Import Logs</button>to upload a CSV file.</li>
+                    <li><strong>Delete All:</strong> <button class="help-btn delete-all-btn">Delete All Logs</button> to remove all logs.</li>
+                    <li><strong>Import:</strong> <button class="help-btn import-btn">Import Logs</button> to upload a CSV file.</li>
+                    <li><strong>Export:</strong> <button class="help-btn export-btn">Export Logs</button> to download logs as CSV.</li>
+                    <li><strong>Export Filtered:</strong> <button id="exportFilteredLogsBtn" class="icon-btn" title="Export Filtered Logs">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </button> to export only filtered logs as CSV.</li>
                 </ul>
             </section>
 
@@ -1645,6 +1788,7 @@ select {
                     </li>
                     <li><strong>State:</strong> Enter state abbreviation (e.g., "CA")</li>
                     <li><strong>Exact phrase:</strong> Use quotes (e.g., "John Doe")</li>
+                    <li><strong>Existing Tickets:</strong> Search "existing ticket" to display all existing tickets call logs.</li>
                 </ul>
             </section>
 
@@ -1654,13 +1798,36 @@ select {
                     <li><strong>Auto-save:</strong> Changes are saved as you type to the local storage of your browser.</li>
                     <li><strong>Generate buttons:</strong>
                         <ul>
-                            <li><button class="help-btn generate-btn">Copy Description</button>: Copies <b style="font-family: monospace; letter-spacing: -.05em; color: #ffe304cc">"(State)-(Vendor ID)-(First Sentence of Notes)"</b> to clipboard.</li>
-                            <li><button class="help-btn generate-btn">Copy Notes</button>: Copies <b style="font-family: monospace; letter-spacing: -.05em; color: #ffe304cc">"(Caller Name) called in with (Notes)"</b> to clipboard.</li>
+                            <li><button class="help-btn generate-btn">Copy Description</button> Copies <b style="font-family: monospace; letter-spacing: -.05em; color: #ffe304cc">"(State)-(Vendor ID)-(First Sentence of Notes)"</b> to clipboard.</li>
+                            <li><button class="help-btn generate-btn">Copy Notes</button> Copies <b style="font-family: monospace; letter-spacing: -.05em; color: #ffe304cc">"(Caller Name) called in with (Notes)"</b> to clipboard.</li>
                         </ul>
                     </li>
-                    <li><strong>Shortcut:</strong> Press ESC to close the current form or modal.</li>
+                    <li><strong>Existing Case Checkbox:</strong> Mark a ticket as an "existing case" if call is regarding an already open ticket. Ticket will appear in <span style="color:var(--accent-color);">blue</span> in the table.</li>
+                    <li><strong>Replacement Required Checkbox:</strong> When checked, it automatically generates a replacement template in the notes field:
+                        <ul>
+                            <br>
+                            <li style="margin-bottom:6px;"><b>Request Reason:</b> Due to [reason]</li>
+                            <li><b>Item List:</b>
+                                <ul>
+                                    <li>1 x [Equipment Name]</li>
+                                </ul>
+                            </li>
+                            <li style="margin-bottom:6px;"><b>Shipping Address:</b>
+                                <br>
+                                [Vendor Name]
+                                <br>
+                                [Street Address]
+                                <br>
+                                [City, State ZIP]
+                            </li>
+                            <li><b>Case #:</b> [Case Number]</li>
+                            <li><b>SN:</b> [Serial Numbers]</li>
+                            <li><b>TID:</b> [Terminal ID]</li>
+                            <br>
+                        </ul>
+                    </li>
+                    <li><strong>Shortcut:</strong> Press <u>ESC</u> to close the current form or modal.</li>
                 </ul>
-                
             </section>
 
             <section>
@@ -1678,7 +1845,7 @@ select {
                     <li>Add new notes by typing in the input fields.</li>
                     <li>Copy note content using the copy icon.</li>
                     <li>Use "Delete All" to clear all scratch notes.</li>
-                    <li>Press Enter for a new note, Shift+Enter for a new line in the same note.</li>
+                    <li>Press <b>Enter</b> for a new note, <b>Shift+Enter</b> for a new line in the same note.</li>
                 </ul>
             </section>
 
@@ -1691,8 +1858,14 @@ select {
         <div class="scratch-notes-content">
             <!-- Add Scratch Notes header with Delete All button -->
             <div class="scratch-notes-header">
-                <h3>Scratch Notes</h3>
-                <button id="deleteAllScratchNotesBtn">Delete All</button>
+                <div class="scratch-notes-header-top">
+                    <h3>Scratch Notes</h3>
+                    <button id="deleteAllScratchNotesBtn">Delete All</button>
+                </div>
+                <div class="scratch-notes-hint">
+                    Press <b>Enter</b> for a new note<br>
+                    Press <b>Shift+Enter</b> for a new line in the same note<br>
+                </div>
             </div>
             <div id="scratchNotesContainer"></div>
         </div>
@@ -1701,8 +1874,8 @@ select {
     <!-- Add this div just before the closing </body> tag -->
     <div id="overlay" class="overlay"></div>
 
-    <script>
-   // Utility Functions
+<script>
+
 const utils = {
     formatDateTimeLocal(date) {
         const d = new Date(date);
@@ -1811,6 +1984,7 @@ const renderer = {
             const date = new Date(log.date);
             const formattedDate = date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' });
             const formattedTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            const caseNumberClass = log.existingCase ? 'existing-case' : '';
             return `
                 <tr data-id="${log.id}">
                     <td>
@@ -1824,7 +1998,7 @@ const renderer = {
                     <td>${log.vendorID}</td>
                     <td>${log.vendorName}</td>
                     <td>${log.phoneNumber}</td>
-                    <td>${log.caseNumber}</td>
+                    <td class="${caseNumberClass}">${log.caseNumber}</td>
                     <td>${log.notes}</td>
                     <td class="icon-column">
                         <span class="icon ${log.caseNumber ? 'icon-check' : 'icon-x'}">
@@ -1998,7 +2172,7 @@ const importExportHandler = {
             return;
         }
 
-        const headers = ['Date & Time', 'State', 'Caller Name', 'Phone Number', 'Vendor Name', 'Vendor ID', 'Case #', 'Notes', 'Replacement', 'Equipment', 'Address'];
+        const headers = ['Date & Time', 'State', 'Caller Name', 'Phone Number', 'Vendor Name', 'Vendor ID', 'Case #', 'Existing Ticket', 'Notes', 'Replacement', 'Equipment', 'Address'];
         const csvContent = [
             headers.join(','),
             ...logs.map(log => [
@@ -2009,6 +2183,7 @@ const importExportHandler = {
                 `"${log.vendorName}"`,
                 `"${log.vendorID}"`,
                 `"${log.caseNumber}"`,
+                log.existingCase ? 'Yes' : 'No',
                 `"${log.notes.replace(/"/g, '""')}"`,
                 log.replacement ? 'Yes' : 'No',
                 `"${utils.serializeEquipment(log.equipment)}"`,
@@ -2028,6 +2203,9 @@ const importExportHandler = {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        
+        // Add this line at the end of the function
+        app.toggleExportFilteredLogsBtn(false);
     },
     handleImportLogs(event) {
         const file = event.target.files[0];
@@ -2086,15 +2264,12 @@ const importExportHandler = {
     },
 
     processLogEntry(entry, importedLogs) {
-        
-        // Split the entry into fields, respecting quoted values and handling empty fields
         const fields = entry.match(/("([^"]|"")*"|[^,]*)(,|$)/g);
-        if (!fields || fields.length < 11) {
+        if (!fields || fields.length < 12) {  // Changed from 11 to 12 to include Existing Case
             console.error('Invalid entry:', entry);
             return;
         }
 
-        // Remove quotes, trim each field, and handle empty fields
         const values = fields.map(field => {
             field = field.trim();
             if (field.endsWith(',')) field = field.slice(0, -1);
@@ -2118,10 +2293,11 @@ const importExportHandler = {
                 vendorName: values[4],
                 vendorID: values[5],
                 caseNumber: values[6],
-                notes: values[7],
-                replacement: values[8].toLowerCase() === 'yes',
-                equipment: utils.deserializeEquipment(values[9]),
-                replacementAddress: values[10] || ''
+                existingCase: values[7].toLowerCase() === 'yes',
+                notes: values[8],
+                replacement: values[9].toLowerCase() === 'yes',
+                equipment: utils.deserializeEquipment(values[10]),
+                replacementAddress: values[11] || ''
             };
             importedLogs.push(log);
         } catch (error) {
@@ -2130,7 +2306,7 @@ const importExportHandler = {
     },
 
     validateCSVStructure(headers) {
-        const expected = ['Date & Time', 'State', 'Caller Name', 'Phone Number', 'Vendor Name', 'Vendor ID', 'Case #', 'Notes', 'Replacement', 'Equipment', 'Address'];
+        const expected = ['Date & Time', 'State', 'Caller Name', 'Phone Number', 'Vendor Name', 'Vendor ID', 'Case #', 'Existing Ticket', 'Notes', 'Replacement', 'Equipment', 'Address'];
         return JSON.stringify(headers) === JSON.stringify(expected);
     },
     overwriteLogs() {
@@ -2139,6 +2315,7 @@ const importExportHandler = {
         utils.showNotification('Logs overwritten successfully!');
         this.resetImportState();
         this.hideImportModal();
+        app.toggleExportFilteredLogsBtn(false);
     },
     appendLogs() {
         const existingLogs = storage.getLogs();
@@ -2147,6 +2324,7 @@ const importExportHandler = {
         utils.showNotification('Logs appended successfully!');
         this.resetImportState();
         this.hideImportModal();
+        app.toggleExportFilteredLogsBtn(false);
     },
     resetImportState() {
         app.importedLogs = [];
@@ -2157,6 +2335,45 @@ const importExportHandler = {
     },
     hideImportModal() {
         document.getElementById('importModal').classList.add('hidden');
+    },
+    exportFilteredLogs() {
+        const filteredLogs = app.currentFilteredLogs;
+        if (!filteredLogs.length) {
+            alert('No logs to export.');
+            return;
+        }
+
+        const headers = ['Date & Time', 'State', 'Caller Name', 'Phone Number', 'Vendor Name', 'Vendor ID', 'Case #', 'Existing Ticket', 'Notes', 'Replacement', 'Equipment', 'Address'];
+        const csvContent = [
+            headers.join(','),
+            ...filteredLogs.map(log => [
+                `"${new Date(log.date).toLocaleString('en-US', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}"`,
+                `"${log.state}"`,
+                `"${log.callerName}"`,
+                `"${log.phoneNumber}"`,
+                `"${log.vendorName}"`,
+                `"${log.vendorID}"`,
+                `"${log.caseNumber}"`,
+                log.existingCase ? 'Yes' : 'No',
+                `"${log.notes.replace(/"/g, '""')}"`,
+                log.replacement ? 'Yes' : 'No',
+                `"${utils.serializeEquipment(log.equipment)}"`,
+                `"${log.replacementAddress || ''}"`
+            ].join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+
+        const now = new Date();
+        const dateTimeStamp = now.toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        link.download = `filtered_call_logs_${dateTimeStamp}.csv`;
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 };
 
@@ -2175,6 +2392,7 @@ const formHandler = {
         document.getElementById('vendorName').value = log.vendorName;
         document.getElementById('vendorID').value = log.vendorID;
         document.getElementById('caseNumber').value = log.caseNumber;
+        document.getElementById('existingCase').checked = log.existingCase || false;
         document.getElementById('notes').value = log.notes;
         document.getElementById('replacementCheckbox').checked = log.replacement;
         document.getElementById('replacementFields').classList.toggle('visible', log.replacement);
@@ -2210,7 +2428,6 @@ const formHandler = {
         this.showForm();
         this.populateForm(newLog);
         document.getElementById('dateTime').value = utils.formatDateTimeLocal(new Date());
-        renderer.renderNewLog(newLog);
         app.updateSelectedRow();
         utils.showNotification('New log created successfully!');
     },
@@ -2255,6 +2472,7 @@ const formHandler = {
             vendorName: formData.get('vendorName'),
             vendorID: formData.get('vendorID'),
             caseNumber: formData.get('caseNumber'),
+            existingCase: formData.get('existingCase') === 'on',
             notes: formData.get('notes'),
             replacement: formData.get('replacementCheckbox') === 'on',
             equipment: equipmentHandler.getEquipmentData(),
@@ -2343,6 +2561,7 @@ const formHandler = {
                 vendorName: `${vendors[Math.floor(Math.random() * vendors.length)]} #${generateRandomNumber(4)}`,
                 vendorID: vendorId,
                 caseNumber,
+                existingCase: Math.random() < 0.3, // 30% chance of being an existing case
                 notes: `Call log ${i + 1}. ${replacement ? 'Equipment replacement required.' : 'Routine maintenance call.'} ${hasCaseNumber ? 'Case number assigned.' : 'Awaiting case number.'}`,
                 replacement,
                 equipment,
@@ -2376,13 +2595,15 @@ const app = {
 
         if (logIndex !== -1) {
             if (name) {
-                if (name === 'replacementCheckbox') {
-                    logs[logIndex].replacement = value;
-                    document.getElementById('replacementFields').classList.toggle('visible', value);
-                    if (value) {
-                        setTimeout(() => {
-                            this.scrollToBottom();
-                        }, 250);
+                if (name === 'replacementCheckbox' || name === 'existingCase') {
+                    logs[logIndex][name === 'replacementCheckbox' ? 'replacement' : 'existingCase'] = value;
+                    if (name === 'replacementCheckbox') {
+                        document.getElementById('replacementFields').classList.toggle('visible', value);
+                        if (value) {
+                            setTimeout(() => {
+                                this.scrollToBottom();
+                            }, 250);
+                        }
                     }
                     this.updateNotesWithAddressAndEquipment();
                 } else {
@@ -2497,6 +2718,7 @@ const app = {
             let logs = storage.getLogs().filter(log => log.id !== parseInt(logId));
             storage.saveLogs(logs);
             renderer.renderLogs(this.currentSort.key, this.currentSort.order);
+            utils.showNotification('Log deleted successfully!');
         }
     },
     handleSort(event) {
@@ -2526,9 +2748,12 @@ const app = {
         });
 
         renderer.renderFilteredLogs(this.currentFilteredLogs);
+        
+        // Add this line at the end of the function
+        this.toggleExportFilteredLogsBtn(this.currentFilteredLogs.length !== storage.getLogs().length);
     },
     handleSearchInput() {
-        const query = document.getElementById('searchInput').value.trim();
+        const query = document.getElementById('searchInput').value.trim().toLowerCase();
         const logs = storage.getLogs();
         const monthYearRegex = /^(0?[1-9]|1[0-2])\/((\d{4})|(\d{2}))$/;
         const specificDateRegex = /^(0?[1-9]|1[0-2])\/(0?[1-9]|[12]\d|3[01])\/((\d{4})|(\d{2}))$/;
@@ -2536,7 +2761,9 @@ const app = {
 
         let filteredLogs = [];
 
-        if (dateRangeRegex.test(query)) {
+        if (query === 'existing ticket' || query === 'existing tickets') {
+            filteredLogs = logs.filter(log => log.existingCase);
+        } else if (dateRangeRegex.test(query)) {
             const [, start, end] = query.match(dateRangeRegex);
             const startDate = utils.parseDate(start);
             const endDate = utils.parseDate(end);
@@ -2570,10 +2797,16 @@ const app = {
             filteredLogs = logs.filter(log => {
                 const exactMatchFound = exactMatches.every(match => {
                     const term = match.slice(1, -1).toLowerCase();
-                    return Object.values(log).some(value => String(value).toLowerCase() === term);
+                    return Object.values(log).some(value => 
+                        String(value).toLowerCase() === term ||
+                        (term === 'existing ticket' && log.existingCase)
+                    );
                 });
                 const regularTermsFound = regularTerms.every(term =>
-                    Object.values(log).some(value => String(value).toLowerCase().includes(term))
+                    Object.values(log).some(value => 
+                        String(value).toLowerCase().includes(term) ||
+                        (term === 'existing' && log.existingCase)
+                    )
                 );
                 return exactMatchFound && regularTermsFound;
             });
@@ -2581,6 +2814,9 @@ const app = {
 
         this.currentFilteredLogs = filteredLogs;
         renderer.renderFilteredLogs(filteredLogs);
+        
+        // Add this line at the end of the function
+        this.toggleExportFilteredLogsBtn(filteredLogs.length !== storage.getLogs().length);
     },
     handleDeleteAllLogs() {
         if (confirm('Are you sure you want to delete all call logs? This action cannot be undone.')) {
@@ -2602,6 +2838,7 @@ const app = {
                 formHandler.hideForm();
             }
             this.hideHelpModal();
+            this.closeScratchNotesPanel(); // Add this line
         }
     },
     handleDateTimeChange(event) {
@@ -2655,6 +2892,7 @@ const app = {
             formHandler.handleCreateNewLog();
             formSection.classList.add('active');
         }, 300);
+        renderer.renderLogs(this.currentSort.key, this.currentSort.order);
     },
     scrollToBottom() {
         const formSection = document.getElementById('formSection');
@@ -2672,6 +2910,17 @@ const app = {
         overlay.style.display = 'block';
         this.renderScratchNotes();
         document.addEventListener('mousedown', this.handleOutsideClick);
+
+        // Add this: Focus on the last scratch note input
+        setTimeout(() => {
+            const inputs = document.querySelectorAll('.scratch-note-input');
+            if (inputs.length > 0) {
+                const lastInput = inputs[inputs.length - 1];
+                lastInput.focus();
+                // Place the cursor at the end of the text
+                lastInput.setSelectionRange(lastInput.value.length, lastInput.value.length);
+            }
+        }, 0);
     },
     closeScratchNotesPanel() {
         const panel = document.getElementById('scratchNotesPanel');
@@ -2779,6 +3028,22 @@ const app = {
         document.getElementById('overlay').addEventListener('click', () => {
             app.closeScratchNotesPanel();
         });
+    },
+    deleteAllScratchNotes() {
+        if (confirm('Are you sure you want to delete all scratch notes? This action cannot be undone.')) {
+            this.scratchNotes = [''];
+            localStorage.setItem('scratchNotes', JSON.stringify(this.scratchNotes));
+            this.renderScratchNotes();
+            utils.showNotification('All scratch notes have been deleted.');
+        }
+    },
+    toggleExportFilteredLogsBtn(show) {
+        const btn = document.getElementById('exportFilteredLogsBtn');
+        if (show) {
+            btn.classList.remove('hidden');
+        } else {
+            btn.classList.add('hidden');
+        }
     }
 };
 
@@ -2879,11 +3144,7 @@ const init = () => {
     });
 
     // Add event listener for 'Delete All' scratch notes button
-    document.getElementById('deleteAllScratchNotesBtn').addEventListener('click', () => {
-        app.scratchNotes = [''];
-        localStorage.setItem('scratchNotes', JSON.stringify(app.scratchNotes));
-        app.renderScratchNotes();
-    });
+    document.getElementById('deleteAllScratchNotesBtn').addEventListener('click', () => app.deleteAllScratchNotes());
 
     // Add event listeners for address and equipment changes
     document.getElementById('replacementAddress').addEventListener('input', app.updateNotesWithAddressAndEquipment.bind(app));
@@ -2904,11 +3165,50 @@ const init = () => {
     }
     renderer.renderLogs(app.currentSort.key, app.currentSort.order);
     app.currentFilteredLogs = storage.getLogs();
+    
+    // Add this line
+    app.toggleExportFilteredLogsBtn(false);
 
     // Add event listener for the replacement checkbox
     document.getElementById('replacementCheckbox').addEventListener('change', (event) => {
         app.updateNotesWithAddressAndEquipment();
         app.autoSave(event);
+    });
+
+    // Export Filtered Logs
+    document.getElementById('exportFilteredLogsBtn').addEventListener('click', importExportHandler.exportFilteredLogs.bind(importExportHandler));
+
+    // Add this to your existing init function in script.js
+
+    const optionsMenu = document.querySelector('.options-menu');
+    const additionalButtons = document.querySelector('.additional-buttons');
+    let isMenuOpen = false;
+
+    optionsMenu.addEventListener('mouseenter', () => {
+        isMenuOpen = true;
+        additionalButtons.classList.add('active');
+    });
+
+    optionsMenu.addEventListener('mouseleave', () => {
+        isMenuOpen = false;
+        setTimeout(() => {
+            if (!isMenuOpen) {
+                additionalButtons.classList.remove('active');
+            }
+        }, 100);
+    });
+
+    additionalButtons.addEventListener('mouseenter', () => {
+        isMenuOpen = true;
+    });
+
+    additionalButtons.addEventListener('mouseleave', () => {
+        isMenuOpen = false;
+        setTimeout(() => {
+            if (!isMenuOpen) {
+                additionalButtons.classList.remove('active');
+            }
+        }, 100);
     });
 };
 
