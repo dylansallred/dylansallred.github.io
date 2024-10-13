@@ -146,6 +146,34 @@ h2::before {
     color: var(--accent-color);
 }
 
+#copyFilteredLogsBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+#copyFilteredLogsBtn.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#copyFilteredLogsBtn:hover {
+    transform: scale(1.1);
+}
+
+#copyFilteredLogsBtn svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-color);
+}
+
+#copyFilteredLogsBtn svg:hover {
+    color: var(--accent-color);
+}
+
 .table-container {
     flex-grow: 1;
     overflow-y: auto;
@@ -173,6 +201,7 @@ button,
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    text-shadow: 0 0 2px rgb(255 255 255 / 40%);
 }
 
 button:hover,
@@ -442,8 +471,7 @@ button:hover,
 .form-group label svg {
     width: 18px;
     height: 18px;
-    stroke: currentColor;
-    color: var(--accent-color);
+
 }
 
 .form-group input[type="checkbox"] + label {
@@ -765,6 +793,92 @@ thead tr:hover {
     gap: 10px;
 }
 
+/* Custom checkbox styles */
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+.checkbox-wrapper:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    transition: transform 0.3s, background-color 0.3s;
+    transform: translateY(-2px);
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-wrapper label {
+    position: relative;
+    padding-left: 45px;
+    cursor: pointer;
+    font-size: 14px;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-color);
+    min-height: 20px;
+}
+
+.checkbox-wrapper label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--accent-color);
+    background-color: var(--primary-color);
+    border-radius: 4px;
+}
+
+.checkbox-wrapper input[type="checkbox"]:checked + label:before {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(0, 120, 212, 0.5); /* Add this line for the glow effect */
+}
+
+.checkbox-wrapper label:after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 0px;
+    width: 7px;
+    height: 13px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+}
+
+.checkbox-wrapper label[for="existingCase"]:after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 7px;
+    width: 7px;
+    height: 13px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+
+}
+
+.checkbox-wrapper input[type="checkbox"]:checked + label:after {
+    opacity: 1;
+}
+
+.checkbox-wrapper label:hover:before {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 5px rgba(0, 120, 212, 0.3); /* Add this line for a subtle hover effect */
+}
+
 .help-content h3 {
     margin: 20px 0 10px 0;
     color: var (--accent-color);
@@ -861,11 +975,7 @@ thead tr:hover {
     pointer-events: none;
 }
 
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+
 
 .replacement-fields {
     display: block;
@@ -1243,33 +1353,26 @@ select {
     -moz-appearance: none;
     appearance: none;
     cursor: pointer;
-}
-
-.form-group select option {
-    background-color: var(--primary-color);
+    padding: 10px;
+    font-size: 16px;
 }
 
 .form-group select optgroup {
-    background-color: var(--primary-color);
+    font-weight: bold;
+    color: var(--accent-color);
 }
 
-.replacement-fields.visible .form-group select {
-    background-color: var(--background-color);
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+.form-group select option {
+    padding: 5px;
+    font-size: 14px;
+}
+
+.form-group select option:hover {
+    background-color: var(--accent-color);
 }
 
 .form-group select::-ms-expand {
     display: none;
-}
-
-.replacement-fields.visible  .form-group select option {
-    background-color: var(--background-color);
-}
-
-.replacement-fields.visible .form-group select optgroup {
-    background-color: var(--background-color);
 }
 
 .overlay {
@@ -1300,57 +1403,47 @@ select {
 
 .form-group label[for="dateTime"] svg {
     stroke: #4CAF50;
+    filter: drop-shadow(0 0 5px rgba(76, 175, 80, 0.5));
 }
 
 .form-group label[for="state"] svg {
     stroke: #2196F3;
+    filter: drop-shadow(0 0 5px rgba(33, 150, 243, 0.5));
 }
 
 .form-group label[for="callerName"] svg {
     stroke: #FFC107;
+    filter: drop-shadow(0 0 5px rgba(255, 193, 7, 0.5));
 }
 
 .form-group label[for="vendorID"] svg {
     stroke: #9C27B0;
+    filter: drop-shadow(0 0 5px rgba(156, 39, 176, 0.5));
 }
 
 .form-group label[for="vendorName"] svg {
     stroke: #FF5722;
+    filter: drop-shadow(0 0 5px rgba(255, 87, 34, 0.5));
 }
 
 .form-group label[for="phoneNumber"] svg {
     stroke: #E91E63;
+    filter: drop-shadow(0 0 5px rgba(233, 30, 99, 0.5));
 }
 
 .form-group label[for="caseNumber"] svg {
     stroke: #00BCD4;
+    filter: drop-shadow(0 0 5px rgba(0, 188, 212, 0.5));
 }
 
 .form-group label[for="notes"] svg {
     stroke: #FF9800;
+    filter: drop-shadow(0 0 5px rgba(255, 152, 0, 0.5));
 }
 
 .form-group label[for="replacementAddress"] svg {
     stroke: #8BC34A;
-}
-
-.checkbox-group input[type="checkbox"] {
-    transition: transform 0.2s ease-in-out;
-    cursor: pointer;
-}
-
-.checkbox-group input[type="checkbox"]:hover {
-    transform: scale(1.3);
-}
-
-.checkbox-group label {
-    display: inline-block;
-    transition: transform 0.2s ease-in-out;
-    cursor: pointer;
-}
-
-.checkbox-group label:hover {
-    transform: scale(1.05);
+    filter: drop-shadow(0 0 5px rgba(139, 195, 74, 0.5));
 }
 
 .case-number-group {
@@ -1364,48 +1457,15 @@ select {
     gap: 10px;
 }
 
-.existing-case-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-left: 10px;
-}
-
-.existing-case-checkbox input[type="checkbox"] {
-    margin: 0;
-    width: auto;
-    transition: transform 0.2s ease-in-out;
-    cursor: pointer;
-}
-
-.existing-case-checkbox input[type="checkbox"]:hover {
-    transform: scale(1.3);
-   
-}
-
-.existing-case-checkbox label {
-    font-size: 0.9em;
-    color: var(--text-color);
-    text-align: center;
-    transition: transform 0.2s ease-in-out;
-
-}
-
-.existing-case-checkbox label:hover{
-    transform: scale(1.05);
-}
 
 #caseNumber {
     width: calc(100% - 120px);
 }
 
-.existing-case-checkbox input:focus{
-    box-shadow: none;
-}
-
 .existing-case {
     color: var(--accent-color);
 }
+
 </style>
 </head>
 <body>
@@ -1447,6 +1507,12 @@ select {
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="7 10 12 15 17 10"></polyline>
                             <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </button>
+                    <button id="copyFilteredLogsBtn" class="icon-btn" title="Copy Filtered Logs">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                         </svg>
                     </button>
                 </h2>
@@ -1500,16 +1566,20 @@ select {
                         </label>
                         <select id="state" name="state" required>
                             <option value="">Select a state</option>
-                            <option value="AB">Alberta (AB)</option>
-                            <option value="CA">California (CA)</option>
-                            <option value="CO">Colorado (CO)</option>
-                            <option value="CT">Connecticut (CT)</option>
-                            <option value="MB">Manitoba (MB)</option>
-                            <option value="MN">Minnesota (MN)</option>
-                            <option value="MS">Mississippi (MS)</option>
-                            <option value="NJ">New Jersey (NJ)</option>
-                            <option value="SK">Saskatchewan (SK)</option>
-                            </select>
+                            <optgroup label="United States">
+                                <option value="CA">California (CA)</option>
+                                <option value="CO">Colorado (CO)</option>
+                                <option value="CT">Connecticut (CT)</option>
+                                <option value="MN">Minnesota (MN)</option>
+                                <option value="MS">Mississippi (MS)</option>
+                                <option value="NJ">New Jersey (NJ)</option>
+                            </optgroup>
+                            <optgroup label="Canada">
+                                <option value="AB">Alberta (AB)</option>
+                                <option value="MB">Manitoba (MB)</option>
+                                <option value="SK">Saskatchewan (SK)</option>
+                            </optgroup>
+                        </select>
                 </div>
                 <div class="form-group">
                         <label for="callerName">
@@ -1562,12 +1632,12 @@ select {
                         </label>
                         <div class="case-number-wrapper">
                             <input type="text" id="caseNumber" name="caseNumber" required>
-                            <div class="existing-case-checkbox">
+                            <div class="checkbox-wrapper">
                                 <input type="checkbox" id="existingCase" name="existingCase">
                                 <label for="existingCase">Existing Ticket</label>
-                </div>
-                </div>
-                </div>
+                            </div>
+                        </div>
+                    </div>
                 <div class="form-group">
                         <label for="notes">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1582,12 +1652,10 @@ select {
                         <button type="button" id="generateTitleBtn" class="generate-btn">Copy Description</button>
                         <button type="button" id="generateNotesBtn" class="generate-btn">Copy Notes</button>
                 </div>
-                    <div class="checkbox-group">
+                    <div class="checkbox-wrapper">
                         <input type="checkbox" id="replacementCheckbox" name="replacementCheckbox">
-                        <label for="replacementCheckbox">
-                            Replacement Required
-                        </label>
-                </div>
+                        <label for="replacementCheckbox">Replacement Required</label>
+                    </div>
                     <div class="replacement-fields" id="replacementFields">
                 <div class="form-group">
                             <label for="replacementAddress">
@@ -1756,7 +1824,7 @@ select {
                     <li>Add new notes by typing in the input fields.</li>
                     <li>Copy note content using the copy icon.</li>
                     <li>Use "Delete All" to clear all scratch notes.</li>
-                    <li>Press <b>Enter</b> for a new note, <b>Shift+Enter</b> for a new line in the same note.</li>
+                    <li>Press <b>Enter</b> for a new line in the same note, <b>Shift+Enter</b> for a new note.</li>
                 </ul>
             </section>
 
@@ -1773,8 +1841,8 @@ select {
                     <button id="deleteAllScratchNotesBtn">Delete All</button>
             </div>
                 <div class="scratch-notes-hint">
-                    Press <b>Enter</b> for a new note<br>
-                    Press <b>Shift+Enter</b> for a new line in the same note<br>
+                    Press <b>Enter</b> for a new line in the same note<br>
+                    Press <b>Shift+Enter</b> for a new note<br>
                 </div>
                 </div>
             <div id="scratchNotesContainer"></div>
@@ -2112,8 +2180,6 @@ const importExportHandler = {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
-        app.toggleExportFilteredLogsBtn(false);
     },
     handleImportLogs(event) {
         const file = event.target.files[0];
@@ -2221,7 +2287,6 @@ const importExportHandler = {
         utils.showNotification('Logs overwritten successfully!');
         this.resetImportState();
         this.hideImportModal();
-        app.toggleExportFilteredLogsBtn(false);
     },
     appendLogs() {
         const existingLogs = storage.getLogs();
@@ -2230,7 +2295,6 @@ const importExportHandler = {
         utils.showNotification('Logs appended successfully!');
         this.resetImportState();
         this.hideImportModal();
-        app.toggleExportFilteredLogsBtn(false);
     },
     resetImportState() {
         app.importedLogs = [];
@@ -2646,7 +2710,7 @@ const app = {
 
         renderer.renderFilteredLogs(this.currentFilteredLogs);
 
-        this.toggleExportFilteredLogsBtn(this.currentFilteredLogs.length !== storage.getLogs().length);
+        this.toggleFilteredLogsBtns(this.currentFilteredLogs.length !== storage.getLogs().length);
     },
     handleSearchInput() {
         const query = document.getElementById('searchInput').value.trim().toLowerCase();
@@ -2711,7 +2775,7 @@ const app = {
         this.currentFilteredLogs = filteredLogs;
         renderer.renderFilteredLogs(filteredLogs);
         
-        this.toggleExportFilteredLogsBtn(filteredLogs.length !== storage.getLogs().length);
+        this.toggleFilteredLogsBtns(filteredLogs.length !== storage.getLogs().length);
     },
     handleDeleteAllLogs() {
         if (confirm('Are you sure you want to delete all call logs? This action cannot be undone.')) {
@@ -2871,7 +2935,7 @@ const app = {
 
     },
     handleScratchNoteKeydown(event, index) {
-        if (event.key === 'Enter' && !event.shiftKey) {
+        if (event.key === 'Enter' && event.shiftKey) {
             event.preventDefault();
             this.scratchNotes.splice(index + 1, 0, '');
             this.renderScratchNotes();
@@ -2927,13 +2991,43 @@ const app = {
             utils.showNotification('All scratch notes have been deleted.');
         }
     },
-    toggleExportFilteredLogsBtn(show) {
-        const btn = document.getElementById('exportFilteredLogsBtn');
+    toggleFilteredLogsBtns(show) {
+        const exportBtn = document.getElementById('exportFilteredLogsBtn');
+        const copyBtn = document.getElementById('copyFilteredLogsBtn');
         if (show) {
-            btn.classList.remove('hidden');
+            exportBtn.classList.remove('hidden');
+            copyBtn.classList.remove('hidden');
         } else {
-            btn.classList.add('hidden');
+            exportBtn.classList.add('hidden');
+            copyBtn.classList.add('hidden');
         }
+    },
+    copyFilteredLogsToClipboard() {
+        const headers = ['Date & Time', 'State', 'Caller Name', 'Phone Number', 'Vendor Name', 'Vendor ID', 'Case #', 'Existing Ticket', 'Notes', 'Replacement', 'Equipment', 'Address'];
+        const tableContent = [
+            headers.join('\t'),
+            ...this.currentFilteredLogs.map(log => [
+                new Date(log.date).toLocaleString('en-US', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
+                log.state,
+                log.callerName,
+                log.phoneNumber,
+                log.vendorName,
+                log.vendorID,
+                log.caseNumber,
+                log.existingCase ? 'Yes' : 'No',
+                log.notes.replace(/\n/g, ' '),
+                log.replacement ? 'Yes' : 'No',
+                utils.serializeEquipment(log.equipment),
+                log.replacementAddress || ''
+            ].join('\t'))
+        ].join('\n');
+
+        navigator.clipboard.writeText(tableContent).then(() => {
+            utils.showNotification('Filtered logs copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+            utils.showNotification('Failed to copy logs to clipboard.');
+        });
     }
 };
 
@@ -2959,8 +3053,12 @@ const init = () => {
             if (deleteBtn) {
                 app.handleDelete(logId);
             } else {
-                app.handleEdit(logId);
-                app.handleRowSelection(event);
+                // Check if there's any selected text
+                const selectedText = window.getSelection().toString();
+                if (!selectedText) {
+                    app.handleEdit(logId);
+                    app.handleRowSelection(event);
+                }
             }
         }
     });
@@ -3033,7 +3131,7 @@ const init = () => {
     renderer.renderLogs(app.currentSort.key, app.currentSort.order);
     app.currentFilteredLogs = storage.getLogs();
     
-    app.toggleExportFilteredLogsBtn(false);
+    app.toggleFilteredLogsBtns(false);
 
     document.getElementById('replacementCheckbox').addEventListener('change', (event) => {
         app.updateNotesWithAddressAndEquipment();
@@ -3041,6 +3139,7 @@ const init = () => {
     });
 
     document.getElementById('exportFilteredLogsBtn').addEventListener('click', importExportHandler.exportFilteredLogs.bind(importExportHandler));
+    document.getElementById('copyFilteredLogsBtn').addEventListener('click', app.copyFilteredLogsToClipboard.bind(app));
 
     const optionsMenu = document.querySelector('.options-menu');
     const additionalButtons = document.querySelector('.additional-buttons');
