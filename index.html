@@ -73,7 +73,7 @@
             border-radius: 16px;
             padding: 0;
             display: grid;
-            grid-template-columns: 1fr 400px;
+            grid-template-columns: 1fr 300px;
             gap: 0;
             align-items: stretch;
             transform-origin: center;
@@ -251,70 +251,78 @@
     </div>
     <div class="container" style="display: none;">
         <h1><span style="-webkit-text-fill-color: #FFF">HTML Application Collection</span> <span style="font-size: 0.5em; vertical-align: middle;">(Created by: <a href="https://github.com/dylansallred" style="text-decoration: none; color: inherit;">Dylan Allred</a>)</span></h1>
-        <div class="tools-grid">
-            <div class="tool-card">
-                <div class="tool-content">
-                    <h2>Video to GIF Converter</h2>
-                    <p>A modern, browser-based tool for converting video clips to GIF animations with advanced customization options. Built with vanilla JavaScript and HTML5, this tool runs entirely in your browser - no server uploads required. The entire application is contained in a single HTML file, making it fast, secure, and privacy-friendly since all processing happens locally on your device.</p>
-                    <div class="tool-links">
-                        <a href="/Video-To-Gif-Converter/VideoToGif.html">Try it out →</a>
-                        <a href="/Video-To-Gif-Converter/">Documentation →</a>
-                        <a href="https://github.com/dylansallred/Video-To-Gif-Converter">Github →</a>
-                        <a href="/Video-To-Gif-Converter/VideoToGif.html" download="VideoToGif.html">Download →</a>
-                    </div>
-                </div>
-                <div class="tool-image">
-                    <img src="images/videotogif.gif" alt="Video to GIF Converter Preview">
-                </div>
-            </div>
-
-
-            <div class="tool-card">
-                <div class="tool-content">
-                    <h2>VideoFrames: Tag & Extract</h2>
-                    <p>A powerful web-based tool designed for efficient video frame extraction and tagging. It allows users to easily navigate through videos, mark specific frames, assign custom tags, and extract selected frames as images. Built with vanilla JavaScript and HTML5, this tool runs entirely in your browser - no server uploads required. The entire application is contained in a single HTML file, making it fast, secure, and privacy-friendly since all processing happens locally on your device.</p>
-                    <div class="tool-links">
-                        <a href="/VideoFrames-Tag-N-Extract/VideoFrames-Tag-N-Extract.html">Try it out →</a>
-                        <a href="/VideoFrames-Tag-N-Extract/">Documentation →</a>
-                        <a href="https://github.com/dylansallred/VideoFrames-Tag-N-Extract">Github →</a>
-                        <a href="/VideoFrames-Tag-N-Extract/VideoFrames-Tag-N-Extract.html" download="VideoFrames-Tag-N-Extract.html">Download →</a>
-                    </div>
-                </div>
-                <div class="tool-image">
-                    <img src="images/videoframes.gif" alt="VideoFrames: Tag & Extract Preview">
-                </div>
-            </div>
-
-
-            <div class="tool-card">
-                <div class="tool-content">
-                    <h2>Screen Recorder</h2>
-                    <p>A powerful and user-friendly web-based screen recording application that enables users to capture their screen content with flexibility. Choose between recording your entire monitor, specific application windows, or browser tabs with audio support. Built with vanilla JavaScript and HTML5, this tool runs entirely in your browser - no server uploads required. The entire application is contained in a single HTML file, making it fast, secure, and privacy-friendly since all processing happens locally on your device.</p>
-                    <div class="tool-links">
-                        <a href="/Screen-Recorder/screenrecorder.html">Try it out →</a>
-                        <a href="/Screen-Recorder/">Documentation →</a>
-                        <a href="https://github.com/dylansallred/Screen-Recorder">Github →</a>
-                        <a href="/Screen-Recorder/screenrecorder.html" download="screenrecorder.html">Download →</a>
-                    </div>
-                </div>
-                <div class="tool-image">
-                    <img src="images/screenrecorder.gif" alt="Screen Recorder Preview">
-                </div>
-            </div>
-
-
-            <!-- Add more tool cards as needed -->
-            <!-- Example:
-            <div class="tool-card">
-                <h2>Tool Name</h2>
-                <p>Tool description goes here...</p>
-                <a href="tool-page.html">Try it out →</a>
-            </div>
-            -->
+        <div class="tools-grid" id="tools-grid">
+            <!-- Dynamic content will be inserted here -->
         </div>
     </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // GitHub API configuration
+        const GITHUB_USERNAME = 'dylansallred';
+        const REPO_PREFIXES = ['Video-To-Gif-Converter', 'VideoFrames-Tag-N-Extract', 'Screen-Recorder', 'SVG-to-Html-Code'];
+        
+        async function fetchGitHubRepos() {
+            try {
+                const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos`);
+                const repos = await response.json();
+                
+                // Filter repositories based on prefixes or naming convention
+                const relevantRepos = repos.filter(repo => 
+                    REPO_PREFIXES.some(prefix => repo.name.includes(prefix))
+                );
+                
+                return relevantRepos;
+            } catch (error) {
+                console.error('Error fetching GitHub repos:', error);
+                return [];
+            }
+        }
+
+        function createToolCard(repo) {
+            // First try to use local image, then fallback to placeholder
+            const imagePath = `images/${repo.name.toLowerCase()}.gif`;
+            const defaultImage = 'images/placeholder.jpg';
+
+            const htmlFileName = repo.name.includes('-') ? 
+                `${repo.name}/${repo.name}.html` : 
+                `${repo.name}/${repo.name.toLowerCase()}.html`;
+
+            const displayName = repo.name
+                .split('-')
+                .join(' ')
+                .replace(/\b\w/g, c => c.toUpperCase());
+
+            return `
+                <div class="tool-card">
+                    <div class="tool-content">
+                        <h2>${displayName}</h2>
+                        <p>${repo.description || 'No description available.'}</p>
+                        <div class="tool-links">
+                            <a href="/${htmlFileName}">Try it out →</a>
+                            <a href="/${repo.name}/">Documentation →</a>
+                            <a href="${repo.html_url}">Github →</a>
+                            <a href="/${htmlFileName}" download="${repo.name}.html">Download →</a>
+                        </div>
+                    </div>
+                    <div class="tool-image">
+                        <img src="${imagePath}" 
+                             alt="${displayName} Preview" 
+                             onerror="this.src='${defaultImage}'">
+                    </div>
+                </div>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const toolsGrid = document.getElementById('tools-grid');
+            const repos = await fetchGitHubRepos();
+            
+            // Create and insert tool cards
+            repos.forEach(repo => {
+                toolsGrid.innerHTML += createToolCard(repo);
+            });
+
+            // Image loading logic
             const images = document.getElementsByTagName('img');
             let loadedImages = 0;
             const totalImages = images.length;
@@ -322,23 +330,20 @@
             function imageLoaded() {
                 loadedImages++;
                 if (loadedImages === totalImages) {
-                    // All images loaded, show content and hide loading screen
                     document.querySelector('.container').style.display = 'block';
                     document.getElementById('loading-screen').style.display = 'none';
                 }
             }
 
-            // Add load event listener to each image
             Array.from(images).forEach(img => {
                 if (img.complete) {
                     imageLoaded();
                 } else {
                     img.addEventListener('load', imageLoaded);
-                    img.addEventListener('error', imageLoaded); // Handle error cases
+                    img.addEventListener('error', imageLoaded);
                 }
             });
 
-            // Fallback in case no images or all images cached
             if (totalImages === 0) {
                 document.querySelector('.container').style.display = 'block';
                 document.getElementById('loading-screen').style.display = 'none';
