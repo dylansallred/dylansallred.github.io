@@ -280,7 +280,7 @@
 
         function createToolCard(repo) {
             // First try to use local image, then fallback to placeholder
-            const imagePath = `images/${repo.name.toLowerCase()}.gif`;
+            const imagePath = `images/${repo.name}.gif`;
             const defaultImage = 'images/placeholder.jpg';
 
             const htmlFileName = repo.name.includes('-') ? 
