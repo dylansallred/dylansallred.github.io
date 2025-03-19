@@ -259,7 +259,10 @@
     <script>
         // GitHub API configuration
         const GITHUB_USERNAME = 'dylansallred';
-        const REPO_PREFIXES = ['Video-To-Gif-Converter', 'VideoFrames-Tag-N-Extract', 'Screen-Recorder', 'SVG-to-Html-Code' , 'Task-Manager'];
+        const REPO_PREFIXES = ['Video-To-Gif-Converter', 'VideoFrames-Tag-N-Extract', 'Screen-Recorder', 'SVG-to-Html-Code' , 'Task-Manager', 'wsClient'];
+        const CACHE_KEY = 'github_repos_cache';
+        const CACHE_TIMESTAMP_KEY = 'github_repos_timestamp';
+        const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
         
         async function fetchGitHubRepos() {
             try {
@@ -271,11 +274,38 @@
                     REPO_PREFIXES.some(prefix => repo.name.includes(prefix))
                 );
                 
+                // Save to local storage
+                localStorage.setItem(CACHE_KEY, JSON.stringify(relevantRepos));
+                localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
+                
                 return relevantRepos;
             } catch (error) {
                 console.error('Error fetching GitHub repos:', error);
-                return [];
+                return null;
             }
+        }
+
+        function getCachedRepos() {
+            const cachedData = localStorage.getItem(CACHE_KEY);
+            const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
+            
+            if (!cachedData || !timestamp) {
+                return null;
+            }
+
+            return {
+                repos: JSON.parse(cachedData),
+                timestamp: parseInt(timestamp)
+            };
+        }
+
+        function isCacheStale(timestamp) {
+            return Date.now() - timestamp > CACHE_DURATION;
+        }
+
+        function areReposDifferent(oldRepos, newRepos) {
+            if (!oldRepos || !newRepos) return true;
+            return JSON.stringify(oldRepos) !== JSON.stringify(newRepos);
         }
 
         function createToolCard(repo) {
@@ -323,14 +353,48 @@
             `;
         }
 
-        document.addEventListener('DOMContentLoaded', async function() {
+        function renderTools(repos) {
             const toolsGrid = document.getElementById('tools-grid');
-            const repos = await fetchGitHubRepos();
-            
-            // Create and insert tool cards
+            toolsGrid.innerHTML = ''; // Clear existing content
             repos.forEach(repo => {
                 toolsGrid.innerHTML += createToolCard(repo);
             });
+        }
+
+        async function checkForUpdates(currentRepos) {
+            const newRepos = await fetchGitHubRepos();
+            if (newRepos && areReposDifferent(currentRepos, newRepos)) {
+                console.log('New repository data found, updating display...');
+                renderTools(newRepos);
+                return true;
+            }
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Try to get cached data first
+            const cachedData = getCachedRepos();
+            let repos = cachedData?.repos;
+
+            // If we have cached data, show it immediately
+            if (repos) {
+                renderTools(repos);
+                document.querySelector('.container').style.display = 'block';
+                document.getElementById('loading-screen').style.display = 'none';
+
+                // Check for updates in the background if cache is stale
+                if (isCacheStale(cachedData.timestamp)) {
+                    checkForUpdates(repos);
+                }
+            } else {
+                // No cache, fetch fresh data
+                repos = await fetchGitHubRepos();
+                if (repos) {
+                    renderTools(repos);
+                }
+                document.querySelector('.container').style.display = 'block';
+                document.getElementById('loading-screen').style.display = 'none';
+            }
 
             // Image loading logic
             const images = document.getElementsByTagName('img');
